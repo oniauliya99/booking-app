@@ -30,7 +30,7 @@ const Card = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <IoPeopleOutline />
-            <span className="text-gray-600 font-semibold">Max Guests: 2</span>
+            <span>2 People</span>
           </div>
           <Link
             href={"#"}
