@@ -25,7 +25,15 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body
+        // style={
+        //   {
+        //     "--font-poppins": poppins.variable,
+        //     fontFamily: "var(--font-poppins)",
+        //   } as React.CSSProperties
+        // }
+        className={`${poppins.variable} antialiased`}
+      >
         <SessionProvider session={session}>
           <Navbar />
           <main className="bg-gray-50 min-h-screen"> {children} </main>
