@@ -3,12 +3,37 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { IoClose, IoMenu } from "react-icons/io5";
+import Image from "next/image";
 
 const Navlink = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const { data: session } = useSession();
   return (
     <>
+      {session?.user ? (
+        <div className="flex items-center justify-end md:order-2">
+          <div className="hidden text-sm bg-gray-50 border rounded-full md:me-0 md:block focus:ring-4 focus:ring-gray-300">
+            <Image
+              className="size-8 rounded-full"
+              src={session.user.image || "/avatar.svg"}
+              width={64}
+              height={64}
+              alt="avatar"
+            />
+          </div>
+          <div className="flex items-center">
+            {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
+            <button
+              className="md:block hidden py-2 px-4 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-sm cursor-pointer "
+              onClick={() => signOut()}
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      ) : null}
       <button
         className="inline-flex items-center p-2 justify-center text-sm text-gray-500 rounded-md md:hidden hover:bg-gray-100"
         type="button"
@@ -54,38 +79,58 @@ const Navlink = () => {
               Contact
             </Link>
           </li>
-          <li>
-            <Link
-              href={"/my-reservation"}
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
-            >
-              My Reservation
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={"/admin/dashboard"}
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
-            >
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={"/admin/room"}
-              className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
-            >
-              Manage Room
-            </Link>
-          </li>
-          <li className="pt-2 md:pt-0">
-            <Link
-              href={"/signin"}
-              className="py-2.5 px-6 bg-orange-400 text-white hover:bg-orange-500 rounded-sm "
-            >
-              Login
-            </Link>
-          </li>
+          {session && (
+            <>
+              <li>
+                <Link
+                  href={"/my-reservation"}
+                  className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
+                >
+                  My Reservation
+                </Link>
+              </li>
+              {session.user?.role === "ADMIN" && (
+                <>
+                  <li>
+                    <Link
+                      href={"/admin/dashboard"}
+                      className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={"/admin/room"}
+                      className="block py-2 px-3 text-gray-800 hover:bg-gray-100 rounded-sm md:hover:bg-transparent md:p-0 "
+                    >
+                      Manage Room
+                    </Link>
+                  </li>
+                </>
+              )}
+            </>
+          )}
+          {session ? (
+            <li className="pt-2 md:pt-0">
+              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
+              <button
+                className="md:hidden py-2.5 px-6 bg-red-400 text-white hover:bg-red-600 rounded-sm cursor-pointer "
+                onClick={() => signOut()}
+              >
+                Logout
+              </button>
+            </li>
+          ) : (
+            <li className="pt-2 md:pt-0">
+              <Link
+                href={"/signin"}
+                className="py-2.5 px-6 bg-orange-400 text-white hover:bg-orange-500 rounded-sm "
+              >
+                Login
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </>
