@@ -1,6 +1,7 @@
 "use client";
 
-import { saveRoom } from "@/lib/actions";
+import { updateRoom } from "@/lib/actions";
+import { RoomProps } from "@/type/room";
 import type { Amenities } from "@prisma/client";
 import type { PutBlobResult } from "@vercel/blob";
 import clsx from "clsx";
@@ -9,9 +10,15 @@ import { useActionState, useRef, useState, useTransition } from "react";
 import { IoCloudUploadOutline, IoTrashOutline } from "react-icons/io5";
 import { BarLoader } from "react-spinners";
 
-const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
+const EditForm = ({
+  amenities,
+  room,
+}: {
+  amenities: Amenities[];
+  room: RoomProps;
+}) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(room.image);
   const [message, setMessage] = useState("");
   const [pending, startTransition] = useTransition();
 
@@ -38,7 +45,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
     });
   };
   const [state, formAction, isPending] = useActionState(
-    saveRoom.bind(null, image),
+    updateRoom.bind(null, image!, room.id),
     null
   );
   const deleteImage = async (image: string) => {
@@ -53,6 +60,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
       }
     });
   };
+  const checkAmenities = room.RoomAmenities.map((item) => item.amenitiesId);
   return (
     <form action={formAction}>
       <div className="grid md:grid-cols-12 gap-5">
@@ -61,6 +69,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
             <input
               type="text"
               name="name"
+              defaultValue={room.name}
               placeholder="Room Name"
               className="py-2 px-4 rounded-sm border border-gray-400 w-full"
             />
@@ -73,6 +82,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
           <div className="mb-4 ">
             <textarea
               rows={8}
+              defaultValue={room.description || ""}
               placeholder="Room Description"
               name="description"
               className="py-2 px-4 rounded-sm border border-gray-400 w-full"
@@ -90,6 +100,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
                 <input
                   type="checkbox"
                   name="amenities"
+                  defaultChecked={checkAmenities.includes(amenity.id)}
                   defaultValue={amenity.id}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded "
                 />
@@ -159,6 +170,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
           <div className="mb-4 ">
             <input
               type="text"
+              defaultValue={room.capacity}
               name="capacity"
               placeholder="Capacity"
               className="py-2 px-4 rounded-sm border border-gray-400 w-full"
@@ -174,6 +186,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
             <input
               type="text"
               name="price"
+              defaultValue={room.price}
               placeholder="Price"
               className="py-2 px-4 rounded-sm border border-gray-400 w-full"
             />
@@ -202,7 +215,7 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
             )}
             disabled={isPending}
           >
-            {isPending ? "Loading" : "Save"}
+            {isPending ? "Updating" : "Update"}
           </button>
         </div>
       </div>
@@ -210,4 +223,4 @@ const CreateForm = ({ amenities }: { amenities: Amenities[] }) => {
   );
 };
 
-export default CreateForm;
+export default EditForm;
