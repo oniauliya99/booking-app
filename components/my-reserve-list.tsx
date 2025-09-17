@@ -21,8 +21,10 @@ const MyReserveList = async () => {
               Reservation ID : #{item.id}
             </h1>
             <div className="flex gap-1 px-3 py-2 text-sm font-normal">
-              <span>Status: {item.Payment[0].status} </span>
-              <span className="font-bold uppercase">status</span>
+              <span>Status: </span>
+              <span className="font-bold uppercase">
+                {item.Payment[0].status}{" "}
+              </span>
             </div>
           </div>
           <div className="flex flex-col mb-4 items-start bg-white rounded-sm md:flex-row md:w-full">
@@ -33,7 +35,7 @@ const MyReserveList = async () => {
               className="object-cover w-full rounded-t-sm h-60 md:h-auto md:w-1/3 md:rounded-none md:rounded-s-sm"
               alt="image room"
             />
-            <div className="flex items-center gap-1 mb-3 font-normal text-gray-700">
+            <div className="flex items-center p-5 mb-3 font-normal text-gray-700 w-full  ">
               <div className="w-full">
                 <div className="flex items-center justify-between text-sm font-medium text-gray-900 truncate">
                   <span>Price</span>
