@@ -1,7 +1,7 @@
 "use client";
 
 import { updateRoom } from "@/lib/actions";
-import { RoomProps } from "@/type/room";
+import { RoomProps } from "@/types/room";
 import type { Amenities } from "@prisma/client";
 import type { PutBlobResult } from "@vercel/blob";
 import clsx from "clsx";

@@ -46,3 +46,53 @@ export const getRoomDetailById = async (roomId: string) => {
     console.log(error);
   }
 };
+
+export const getReservationById = async (id: string) => {
+  try {
+    return await prisma.reservation.findUnique({
+      where: { id },
+      include: {
+        room: { select: { name: true, image: true, price: true } },
+        user: { select: { name: true, email: true, phone: true } },
+        Payment: true,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getDisabledRoomById = async (roomId: string) => {
+  try {
+    return await prisma.reservation.findMany({
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+      where: { roomId, Payment: { some: { status: { not: "failure" } } } },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getReservationByUserId = async () => {
+  const session = await auth();
+  if (!session || !session.user || !session.user.id)
+    throw new Error("Unauthorized Access");
+  try {
+    return await prisma.reservation.findMany({
+      where: { userId: session.user.id },
+      include: {
+        room: { select: { name: true, image: true, price: true } },
+        Payment: true,
+        user: {
+          select: { name: true, email: true, phone: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

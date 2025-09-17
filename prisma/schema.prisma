@@ -77,7 +77,7 @@ model Payment {
   id            String   @id @default(cuid())
   method        String
   amount        Int
-  status        String   @default("UNPAID")
+  status        String   @default("unpaid")
   reservationId String   @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
